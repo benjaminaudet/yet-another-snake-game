@@ -1,4 +1,5 @@
-let frameRateValue = 8;
+const defaultFrameRateValue = 8;
+let frameRateValue = defaultFrameRateValue;
 const canvasSize = 640;
 const panelSize = 250;
 const gridSize = 32;
@@ -69,6 +70,8 @@ function resetGame() {
     endSound.play();
     gameOverBool = false;
     pauseBool = false;
+    resetFrameRate();
+    frameRate(frameRateValue);
 }
 
 function gameOver() {
@@ -173,16 +176,24 @@ function drawPanel() {
     drawControllers();
 }
 
+function resetFrameRate() {
+    frameRateValue = defaultFrameRateValue;
+}
+
+function increaseFrameRate() {
+    if (points % 3 == 0) {
+        frameRateValue += 1;
+        frameRate(frameRateValue);
+    }
+}
+
 function checkEat() {
     if (snake.x == food.x && snake.y == food.y) {
         eatSound.play();
         food = new Food();
         points++;
         snake.length++;
-        if (points % 3 == 0) {
-            frameRateValue += 1;
-            frameRate(frameRateValue);
-        }
+        increaseFrameRate();
     }
 }
 
