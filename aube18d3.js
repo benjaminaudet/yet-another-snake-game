@@ -166,10 +166,10 @@ function drawPoints() {
 }
 
 function drawControllers() {
-    let label = gameOverBool ? 'Reset' : 'Pause'; 
+    let label = gameOverBool ? 'Reset' : pauseBool ? 'Resume' : 'Pause'; 
     rect(panelButton.x, panelButton.y, panelButton.width, panelButton.height);
     fill(0, 0, 0);
-    text(label, panelButton.x + 30, panelButton.y + 38);
+    text(label, panelButton.x + 15, panelButton.y + 38);
 }
 
 function drawPanel() {
