@@ -54,10 +54,17 @@ class Snake {
     }
 };
 
+function generateRandomCoordinate() {
+    return parseInt(Math.random() * mapSize) * gridSize
+};
+
+
 class Food {
     constructor() {
-        this.x = parseInt(Math.random() * mapSize) * gridSize;
-        this.y = parseInt(Math.random() * mapSize) * gridSize;
+        var x = generateRandomCoordinate();
+        var y = generateRandomCoordinate();
+        this.x = x;
+        this.y = y;
     }
 };
 
