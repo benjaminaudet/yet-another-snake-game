@@ -196,9 +196,7 @@ function checkAutoEat() {
     return autoEat;
 }
 
-function setup() {
-    createCanvas(canvasSize + panelSize, canvasSize);
-    frameRate(frameRateValue);
+function loadAssets() {
     eatSound = loadSound('eat.mp3');
     endSound = loadSound('crash.mp3');
     mapBackground = loadImage('bg.png');
@@ -209,6 +207,12 @@ function setup() {
     snakeHeadImg.push(loadImage('snake-head-W.png'));
     snakeBodyImg.push(loadImage('snake-body-ver.png'));
     snakeBodyImg.push(loadImage('snake-body-hor.png'));
+}
+
+function setup() {
+    createCanvas(canvasSize + panelSize, canvasSize);
+    frameRate(frameRateValue);
+    loadAssets();
     background(mapBackground, 0, 0);
 }
 
