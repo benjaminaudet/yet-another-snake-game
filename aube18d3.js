@@ -74,7 +74,6 @@ let food = new Food();
 function resetGame() {
     snake = new Snake();
     points = 0;
-    endSound.play();
     gameOverBool = false;
     pauseBool = false;
     resetFrameRate();
@@ -83,6 +82,7 @@ function resetGame() {
 
 function gameOver() {
     gameOverBool = true;
+    endSound.play();
     pause();
 }
 
