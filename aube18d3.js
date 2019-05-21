@@ -12,6 +12,19 @@ let endSound;
 let snakeHeadImg = [];
 let snakeBodyImg = [];
 let pauseBool = false;
+const direction = {
+    NORTH: 0,
+    EAST: 1,
+    SOUTH: 2,
+    WEST: 3
+};
+const turnImgIndex = {
+    SE: 2,
+    NE: 3,
+    SW: 4,
+    NW: 5
+
+}
 let panelButton = {
     x: 650,
     y: 92 + 30,
@@ -25,6 +38,48 @@ let gameOverOverlay = {
     width: 320
 }
 let gameOverBool = false;
+let snakeBodyTurnImg = [
+    {
+        second: direction.NORTH,
+        first: direction.EAST,
+        index: turnImgIndex.SE
+    },
+    {
+        second: direction.NORTH,
+        first: direction.WEST,
+        index: turnImgIndex.SW
+    },
+    {
+        second: direction.SOUTH,
+        first: direction.EAST,
+        index: turnImgIndex.NE
+    },
+    {
+        second: direction.SOUTH,
+        first: direction.WEST,
+        index: turnImgIndex.NW
+    },
+    {
+        second: direction.EAST,
+        first: direction.NORTH,
+        index: turnImgIndex.NW
+    },
+    {
+        second: direction.WEST,
+        first: direction.NORTH,
+        index: turnImgIndex.NE
+    },
+    {
+        second: direction.EAST,
+        first: direction.SOUTH,
+        index: turnImgIndex.SW
+    },
+    {
+        second: direction.WEST,
+        first: direction.SOUTH,
+        index: turnImgIndex.SE
+    },
+];
 
 class Snake {
     constructor() {
@@ -115,20 +170,27 @@ function computeDirectionsSensitivesValues() {
 
 function drawSnakeTail() {
     for (let i = 0; i < snake.length; i++) {
-        if (!snake.logPositions[i]) {
+        const currentLogPos = snake.logPositions[i];
+        const nextLogPos = snake.logPositions[i - 1];
+
+        if (!currentLogPos) {
             return;
         }
-        image(snakeBodyImg[snake.logPositions[i].direction % 2], snake.logPositions[i].x, snake.logPositions[i].y);
+        if (nextLogPos && currentLogPos.direction != nextLogPos.direction) {
+            let turnImage = snakeBodyTurnImg.find(el => {
+                return (currentLogPos.direction == el.first && nextLogPos.direction == el.second)
+            })
+            image(snakeBodyImg[turnImage.index], currentLogPos.x, currentLogPos.y);
+        } else {
+            image(snakeBodyImg[currentLogPos.direction % 2], currentLogPos.x, currentLogPos.y);
+        }
     }
 }
 
 function drawSnake() {
-    let op = computeDirectionsSensitivesValues();
     image(snakeHeadImg[snake.direction], snake.x, snake.y);
     drawSnakeTail();
     snake.addLogPositions(snake.x, snake.y, snake.direction);
-    snake.x += op.x;
-    snake.y += op.y;
 }
 
 function checkLimit() {
@@ -225,6 +287,10 @@ function loadAssets() {
     snakeHeadImg.push(loadImage('snake-head-W.png'));
     snakeBodyImg.push(loadImage('snake-body-ver.png'));
     snakeBodyImg.push(loadImage('snake-body-hor.png'));
+    snakeBodyImg.push(loadImage('snake-body-turn-SE.png'));
+    snakeBodyImg.push(loadImage('snake-body-turn-NE.png'));
+    snakeBodyImg.push(loadImage('snake-body-turn-SW.png'));
+    snakeBodyImg.push(loadImage('snake-body-turn-NW.png'));
 }
 
 function setup() {
