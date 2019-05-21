@@ -107,6 +107,12 @@ class Snake {
         this.logPositions = [];
         points = 0;
     }
+
+    forward() {
+        let {x, y} = computeIncrementValues();
+        snake.x += x;
+        snake.y += y;
+    }
 };
 
 function generateRandomCoordinate() {
@@ -141,7 +147,7 @@ function gameOver() {
     pause();
 }
 
-function computeDirectionsSensitivesValues() {
+function computeIncrementValues() {
     switch (snake.direction) {
         case 0:
             return {
@@ -347,4 +353,5 @@ function draw() {
     }
     drawSnake();
     drawFood();
+    snake.forward();
 }
