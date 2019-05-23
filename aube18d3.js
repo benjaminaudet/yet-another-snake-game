@@ -14,6 +14,7 @@ let endSound;
 let snakeHeadImg = [];
 let snakeBodyImg = [];
 let pauseBool = false;
+let gameStart = false;
 const direction = {
     NORTH: 0,
     EAST: 1,
@@ -27,12 +28,9 @@ const turnImgIndex = {
     NW: 5
 
 }
-let panelButton = {
-    x: 650,
-    y: 92 + 30,
-    height: 50,
-    width: 150
-}
+
+let buttons = {};
+
 let gameOverOverlay = {
     x: 320,
     y: 320,
@@ -122,6 +120,34 @@ function generateRandomCoordinate() {
     return parseInt(Math.random() * mapSize) * gridSize
 };
 
+class Button {
+    constructor(config) {
+        this.x = config.x;
+        this.y = config.y;
+        this.label = config.label;
+        this.width = textWidth(this.label());
+        this.textSize = config.textSize || 32;
+        this.height = config.height || this.textSize + 5;
+        this.backgroundColor = config.backgroundColor || [0, 0, 0];
+        this.textColor = config.textColor || [255, 255, 255];
+        this.onClick = config.onClick || (() => {});
+        this.margin = config.margin || {hori: 20, verti: 20};
+    }
+
+    draw() {
+        textSize(this.textSize);
+        fill(...this.backgroundColor);
+        rect(this.x, this.y, this.width + this.margin.hori, this.height + this.margin.verti);
+        fill(...this.textColor);
+        text(this.label(), this.x + this.width / 2 + this.margin.hori / 2, this.y + this.textSize / 2 + this.margin.verti / 2);
+    }
+
+    declareOnClick() {
+        if (mouseX > this.x && mouseY > this.y && mouseX < (this.x + this.width) && mouseY < (this.y + this.height)) {
+            this.onClick();
+        }
+    }
+}
 
 class Food {
     constructor() {
@@ -222,25 +248,44 @@ function drawFood() {
     image(foodImg, food.x, food.y);
 }
 
-function drawTitle() {
-    text('Snake Game', 650, 30);
-}
-
 function drawGameOver() {
     textSize(80);
     fill(255, 255, 255);
-    text('GAME OVER', 80, 317);
+    text('GAME OVER', canvasSize / 2, 317);
 }
 
 function drawPoints() {
-    text(`Points: ${points}`, 650, 30 + 32 + 30);
+    text(`Points: ${points}`, canvasSize + panelSize / 2, 32);
 }
 
 function drawControllers() {
-    let label = gameOverBool ? 'Reset' : pauseBool ? 'Resume' : 'Pause'; 
-    rect(panelButton.x, panelButton.y, panelButton.width, panelButton.height);
-    fill(0, 0, 0);
-    text(label, panelButton.x + 15, panelButton.y + 38);
+    buttons.panelButton = new Button({
+        x: canvasSize + panelSize / 2,
+        y: 92 + 30,
+        height: 50,
+        label: () => gameOverBool ? 'Reset' : pauseBool ? 'Resume' : 'Pause',
+        onClick: () => gameOverBool ? resetGame() : pause()
+    });
+    buttons.panelButton.draw();
+}
+
+function drawStartWindow() {
+    fill(33, 33, 33);
+    rect(50, 50, canvasSize + panelSize - 100, canvasSize - 100, 20, 20, 20, 20);
+    textSize(50);
+    fill(255, 255, 255);
+    text('Yet Another Snake Game', (canvasSize + panelSize) / 2, canvasSize - (canvasSize - 100));
+    buttons.startButton = new Button({
+        textSize: 50,
+        backgroundColor: [255, 255, 255],
+        textColor: [0, 0, 0],
+        x: ((canvasSize + panelSize) - textWidth('START')) / 2 - 20,
+        y: (canvasSize - 100 - 45),
+        height: 50,
+        label: () => 'START',
+        onClick: () => gameStart = true
+    });
+    buttons.startButton.draw();
 }
 
 function drawPanel() {
@@ -249,7 +294,6 @@ function drawPanel() {
     }
     textSize(32);
     fill(255, 255, 255);
-    drawTitle();
     drawPoints();
     drawControllers();
 }
@@ -310,6 +354,7 @@ function preload() {
 function setup() {
     createCanvas(canvasSize + panelSize, canvasSize);
     frameRate(frameRateValue);
+    textAlign(CENTER, CENTER);
     background(mapBackground, 0, 0);
     backgroundMusic.loop();
 }
@@ -340,17 +385,29 @@ function keyPressed() {
 }
 
 function mouseClicked() {
-    if (mouseX > panelButton.x && mouseY > panelButton.y && mouseX < (panelButton.x + panelButton.width) && mouseY < (panelButton.y + panelButton.height)) {
-        gameOverBool ? resetGame() : pause();
-    }
+    Object.keys(buttons).forEach(key => {
+        if (buttons[key]) {
+            buttons[key].declareOnClick()
+        }
+    })
 }
 
 function pause() {
     pauseBool = !pauseBool;
 }
 
+function touchStarted() {
+    if (getAudioContext().state !== 'running') {
+      getAudioContext().resume();
+    }
+  }
+
 function draw() {
     clear();
+    if (!gameStart) {
+        drawStartWindow();
+        return;
+    }
     drawPanel();
     if (pauseBool) {
         return;
