@@ -4,6 +4,7 @@ const canvasSize = 640;
 const panelSize = 250;
 const gridSize = 32;
 const mapSize = 20;
+const defaultSnakeLength = 3;
 let points = 0;
 let mapBackground;
 let foodImg;
@@ -83,15 +84,16 @@ let snakeBodyTurnImg = [
 
 class Snake {
     constructor() {
-        this.x = canvasSize / 2;
-        this.y = canvasSize / 2;
-        this.length = 3;
+        const middlePointCoordinate = canvasSize / 2;
+        this.x = middlePointCoordinate;
+        this.y = middlePointCoordinate;
+        this.length = defaultSnakeLength;
 
         // direction: 0 = North, 1 = East, 2 = South, 3 = West
-        this.direction = 0;
+        this.direction = direction.NORTH;
         this.logPositions = [
-            { x: canvasSize / 2, y: canvasSize / 2 + gridSize, direction: 0 },
-            { x: canvasSize / 2, y: canvasSize / 2 + gridSize * 2, direction: 0 }
+            { x: middlePointCoordinate, y: middlePointCoordinate + gridSize, direction: 0 },
+            { x: middlePointCoordinate, y: middlePointCoordinate + gridSize * 2, direction: 0 }
         ];
     }
 
