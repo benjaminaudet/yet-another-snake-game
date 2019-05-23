@@ -5,6 +5,7 @@ const panelSize = 250;
 const gridSize = 32;
 const mapSize = 20;
 const defaultSnakeLength = 3;
+let backgroundMusic;
 let points = 0;
 let mapBackground;
 let foodImg;
@@ -287,6 +288,7 @@ function checkAutoEat() {
 function loadAssets() {
     eatSound = loadSound('eat.mp3');
     endSound = loadSound('crash.mp3');
+    backgroundMusic = loadSound('endless_nights.mp3');
     mapBackground = loadImage('bg.png');
     foodImg = loadImage('food.png');
     snakeHeadImg.push(loadImage('snake-head-N.png'));
@@ -301,11 +303,15 @@ function loadAssets() {
     snakeBodyImg.push(loadImage('snake-body-turn-NW.png'));
 }
 
+function preload() {
+    loadAssets();
+}
+
 function setup() {
     createCanvas(canvasSize + panelSize, canvasSize);
     frameRate(frameRateValue);
-    loadAssets();
     background(mapBackground, 0, 0);
+    backgroundMusic.loop();
 }
 
 function keyPressed() {
