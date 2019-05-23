@@ -319,22 +319,22 @@ function keyPressed() {
         if (snake.direction == 2) {
             snake.cutTail();
         }
-        snake.direction = 0;
+        snake.direction = direction.NORTH;
     } else if (keyCode == RIGHT_ARROW) {
         if (snake.direction == 3) {
             snake.cutTail();
         }
-        snake.direction = 1;
+        snake.direction = direction.EAST;
     } else if (keyCode == DOWN_ARROW) {
         if (snake.direction == 0) {
             snake.cutTail();
         }
-        snake.direction = 2;
+        snake.direction = direction.SOUTH;
     } else if (keyCode == LEFT_ARROW) {
         if (snake.direction == 1) {
             snake.cutTail();
         }
-        snake.direction = 3;
+        snake.direction = direction.WEST;
         return false;
     }
 }
